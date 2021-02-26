@@ -144,8 +144,11 @@ def k8s():
         return f"(k8s {', '.join(output)})"
 
 
-def time():
-    return f'(time {strftime("%H:%M:%S", localtime())})'
+def time(timer):
+    if timer > 2:
+        return f'(took {timer}s)'
+    else:
+        return ""
 
 
 def prompt(last_status):
@@ -184,16 +187,17 @@ def virtual_env():
 
 @click.command()
 @click.option("--last-status", type=int)
+@click.option("--timer", type=int)
 @click.option("--tmux/--no-tmux", type=bool, default=False)
-def cli(last_status, tmux):
+def cli(last_status, timer, tmux):
     if tmux:
         print(" ".join(filter(lambda x: x and len(x) > 0, ["->", k8s()])))
     else:
         # No idea why PyCharm sets TMUX variable (why it is set in that context)
         if os.getenv("TMUX", None) and not os.getenv("TERMINAL_EMULATOR"):
-            fns = [lambda: "  ", cwd, virtual_env, git, jobs, time, lambda: prompt(last_status)]
+            fns = [lambda: "  ", cwd, virtual_env, git, jobs, lambda: time(timer), lambda: prompt(last_status)]
         else:
-            fns = [lambda: "  ", cwd, virtual_env, git, k8s, jobs, time, lambda: prompt(last_status)]
+            fns = [lambda: "  ", cwd, virtual_env, git, k8s, jobs, lambda: time(timer), lambda: prompt(last_status)]
         print(
             " ".join(
                 filter(lambda x: x and len(x) > 0, [f() for f in fns])
