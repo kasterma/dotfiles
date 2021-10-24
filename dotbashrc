@@ -1,0 +1,47 @@
+#echo "bashrc"   # for debugging while setting this up
+
+#### misc #########################################################
+
+if [ $(uname) = "Linux" ]; then
+  #echo "Linux"
+  BASH_COMPLETION_D="/etc/bash_completion.d/"
+else
+  # echo "Mac"
+  BREW_PREFIX=/usr/local
+  export LC_ALL=en_US.UTF-8  # for python click
+  BASH_COMPLETION_D="/usr/local/etc/bash_completion.d/"
+  eval $(minikube docker-env)
+fi
+
+
+##### alias setup ##################################################
+
+if [ $(uname) = "Linux" ]; then
+  alias emacs="emacs -nw"
+else
+  alias emacs="open -a /Applications/Emacs.app"
+fi
+
+###### prompt setup ##################################################
+
+# _update_ps1 needs to be the first here b/c it uses $? and this needs
+# to be the code from the last run command.  Unset timer needs to be last
+# b/c otherwise the trap debug gets called and it already gets a value.
+# screen-256color is TERM in iTerm/GNOME Terminal/tmux(b/c we configured that)
+# other terms leave prompt as it is (for e.g. vagrant up recognized and
+# interact with the prompt)
+if [ "$TERM" == "screen-256color" ]; then
+
+  function timer_start {
+    timer=${timer:-$SECONDS}
+  }
+
+  trap 'timer_start' DEBUG
+
+  function _update_ps1() {
+    PS1="$(~/dotfiles-gh/weakline-shell.py --last-status $? --timer $(($SECONDS - $timer)) )"
+  }
+
+  echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  export PROMPT_COMMAND="_update_ps1; history -a; unset timer"
+fi

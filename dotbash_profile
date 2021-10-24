@@ -1,0 +1,206 @@
+echo "bash_profile"   # for debugging while setting this up
+
+export VAGRANT_DEFAULT_PROVIDER='virtualbox'
+export EDITOR="emacs -nw"
+
+if [ $(uname) = "Linux" ]; then
+  #echo "Linux"
+  PATH=~/bin:/usr/local/bin:$PATH:
+  BREW_PREFIX="brew_not_applicable"
+  BASH_COMPLETION_D="/etc/bash_completion.d/"
+
+else
+  # echo "Mac"
+  export BASH_SILENCE_DEPRECATION_WARNING=1
+  PATH=/usr/local/opt/findutils/libexec/gnubin:/usr/local/opt/curl/bin:/usr/local/bin:~/bin:/usr/local/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-tar/libexec/gnubin:/usr/local/bin:$PATH:
+  BREW_PREFIX=/usr/local
+  export LC_ALL=en_US.UTF-8  # for python click
+  BASH_COMPLETION_D="/usr/local/etc/bash_completion.d/"
+  eval $(minikube docker-env)
+  alias emacs="open -a /Applications/Emacs.app"
+  export KUBECONFIG=~/.kube/config_tclag_de_acc1:~/.kube/config_tclag_de_dev1:~/.kube/config_tclag_de_prd1:~/.kube/config_tclag_dev1
+fi
+
+MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+
+export CLICOLOR=1
+
+
+
+
+
+# fix the history
+export HISTFILESIZE=100000
+export HISTSIZE=100000
+export HISTIGNORE="&:[ ]*:exit"
+shopt -s histappend   # append to the history file
+shopt -s cmdhist      # multiline commands as one history item
+
+# Check for interactive bash and that we haven't already been sourced.
+#[ -z "$BASH_VERSION" -o -z "$PS1" -o -n "$BASH_COMPLETION" ] && return
+
+# use color with grep (set to auto to not color when output to a file or pipe)
+#export GREP_OPTIONS='--color=always'
+
+#copy output of last command to clipboard
+alias copylast="fc -e -|pbcopy"
+
+#curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
+if [ -f ~/.git-completion.bash ]; then
+  . ~/.git-completion.bash
+fi
+
+
+if [ -f ~/dotfiles/maven_bash_completion.bash ]; then
+  . ~/dotfiles/maven_bash_completion.bash
+fi
+
+if [ -f ~/dotfiles/helm_completion.bash ]; then
+   . ~/dotfiles/helm_completion.bash
+else
+   echo "No helm_completion.bash"
+fi
+
+if [ -f $BREW_PREFIX/etc/bash_completion ]; then
+. $BREW_PREFIX/etc/bash_completion
+fi
+
+if [ -f /etc/bash_completion ]; then
+   . /etc/bash_completion
+fi
+
+if [ -f ~/dotfiles/kubectl_bash_completion.bash ]; then
+. ~/dotfiles/kubectl_bash_completion.bash
+else
+  echo "No kubectl_bash_completion found"
+fi
+
+# aws completion (required pip install awscli)
+complete -C aws_completer aws
+
+#export IBUS_ENABLE_SYNC_MODE=1
+
+#-----------------------------------------------------------------------
+# History search
+#-----------------------------------------------------------------------
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+
+# for use of aws command line tool
+export PATH=~/bin:~/.local/bin:$PATH
+
+alias ec=emacsclient
+alias ect="ec -t"
+
+source ${BASH_COMPLETION_D}docker
+
+function dls {
+  docker container ls
+}
+
+function dbash {
+  docker exec -ti $1 bash
+}
+
+function dsh {
+  docker exec -ti $1 sh
+}
+
+function _docker_complete {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    container_names="$(docker container ls | tail -n +2 | awk '{print $NF}')"
+
+    #opts = options for command
+    #if [[ ${cur} == -* ]] ; then
+    #    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    #    return 0
+    #fi
+
+    COMPREPLY=( $(compgen -W "${container_names}" -- ${cur}) )
+    return 0
+}
+
+complete -F _docker_complete dsh
+complete -F _docker_complete dbash
+
+function kexec {
+  if [ $# -eq 1 ]; then
+    kubectl exec -ti $1 -- bash
+  elif [ $# -eq 2 ]; then
+    kubectl exec -ti $1 -c $2 -- bash
+  else
+    kubectl exec -ti $*
+  fi
+}
+
+function _k8s_complete {
+  pod_names="$(kubectl get pods | tail -n+2 | awk '{print $1}')"
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  COMPREPLY=( $(compgen -W "${pod_names}" -- ${cur}) )
+  return 0
+}
+
+# echo -1.5
+
+complete -F _k8s_complete kexec
+
+export CDPATH=.:~:~/projects
+
+export RUISNAAM=kaste503
+complete -C /Users/kasterma/bin/vault vault
+
+# pip bash completion start
+_pip_completion()
+{
+    COMPREPLY=( $( COMP_WORDS="${COMP_WORDS[*]}" \
+                   COMP_CWORD=$COMP_CWORD \
+                   PIP_AUTO_COMPLETE=1 $1 ) )
+}
+complete -o default -F _pip_completion pip
+# pip bash completion end
+
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+
+alias nmux='tmux new -s $(basename $PWD)'
+
+function kctx {
+  kubectl config use-context $1
+}
+
+_kube_contexts()
+{
+  local curr_arg;
+  curr_arg=${COMP_WORDS[COMP_CWORD]}
+  COMPREPLY=( $(compgen -W "- $(kubectl config get-contexts --output='name')" -- $curr_arg ) );
+}
+
+complete -F _kube_contexts kubectx kctx
+
+#function kns {
+#  kubectl config set-context --current --namespace=$1
+#}
+
+_kube_namespaces()
+{
+  local curr_arg;
+  curr_arg=${COMP_WORDS[COMP_CWORD]}
+  COMPREPLY=( $(compgen -W "- $(kubectl get namespaces -o=jsonpath='{range .items[*].metadata.name}{@}{"\n"}{end}')" -- $curr_arg ) );
+}
+
+complete -F _kube_namespaces kns
+
+function kgp {
+  kubectl get pods $1
+}
+
+alias cfssl='docker run -ti --rm -v$(pwd):/apps -w /apps cfssl/cfssl:1.5.0'
+alias cfssljson='docker run -ti --rm -v$(pwd):/apps -w /apps --entrypoint=cfssljson cfssl/cfssl:1.5.0'
+
+[[ -s ~/.bashrc ]] && source ~/.bashrc
