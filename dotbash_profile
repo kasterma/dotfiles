@@ -17,7 +17,6 @@ else
   export LC_ALL=en_US.UTF-8  # for python click
   BASH_COMPLETION_D="/usr/local/etc/bash_completion.d/"
   eval $(minikube docker-env)
-  alias emacs="open -a /Applications/Emacs.app"
   export KUBECONFIG=~/.kube/config_tclag_de_acc1:~/.kube/config_tclag_de_dev1:~/.kube/config_tclag_de_prd1:~/.kube/config_tclag_dev1
 fi
 
