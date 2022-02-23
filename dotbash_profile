@@ -8,7 +8,8 @@ if [ $(uname) = "Linux" ]; then
   PATH=~/bin:/usr/local/bin:$PATH:
   BREW_PREFIX="brew_not_applicable"
   BASH_COMPLETION_D="/etc/bash_completion.d/"
-
+  source /etc/bash_completion
+  export KUBECONFIG=~/.kube/config_tclag_de_acc1:~/.kube/config_tclag_de_dev1:~/.kube/config_tclag_de_prd1:~/.kube/config_tclag_dev1
 else
   # echo "Mac"
   export BASH_SILENCE_DEPRECATION_WARNING=1
@@ -44,35 +45,6 @@ shopt -s cmdhist      # multiline commands as one history item
 #copy output of last command to clipboard
 alias copylast="fc -e -|pbcopy"
 
-#curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
-if [ -f ~/.git-completion.bash ]; then
-  . ~/.git-completion.bash
-fi
-
-
-if [ -f ~/dotfiles/maven_bash_completion.bash ]; then
-  . ~/dotfiles/maven_bash_completion.bash
-fi
-
-if [ -f ~/dotfiles/helm_completion.bash ]; then
-   . ~/dotfiles/helm_completion.bash
-else
-   echo "No helm_completion.bash"
-fi
-
-if [ -f $BREW_PREFIX/etc/bash_completion ]; then
-. $BREW_PREFIX/etc/bash_completion
-fi
-
-if [ -f /etc/bash_completion ]; then
-   . /etc/bash_completion
-fi
-
-if [ -f ~/dotfiles/kubectl_bash_completion.bash ]; then
-. ~/dotfiles/kubectl_bash_completion.bash
-else
-  echo "No kubectl_bash_completion found"
-fi
 
 # aws completion (required pip install awscli)
 complete -C aws_completer aws
@@ -87,9 +59,6 @@ bind '"\e[B": history-search-forward'
 
 # for use of aws command line tool
 export PATH=~/bin:~/.local/bin:$PATH
-
-alias ec=emacsclient
-alias ect="ec -t"
 
 source ${BASH_COMPLETION_D}docker
 
@@ -146,8 +115,6 @@ function _k8s_complete {
 
 complete -F _k8s_complete kexec
 
-export CDPATH=.:~:~/projects
-
 export RUISNAAM=kaste503
 complete -C /Users/kasterma/bin/vault vault
 
@@ -201,5 +168,7 @@ function kgp {
 
 alias cfssl='docker run -ti --rm -v$(pwd):/apps -w /apps cfssl/cfssl:1.5.0'
 alias cfssljson='docker run -ti --rm -v$(pwd):/apps -w /apps --entrypoint=cfssljson cfssl/cfssl:1.5.0'
+
+export CDPATH=.:~:~/projects:/:/workspace
 
 [[ -s ~/.bashrc ]] && source ~/.bashrc

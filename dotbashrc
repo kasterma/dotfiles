@@ -5,6 +5,7 @@
 if [ $(uname) = "Linux" ]; then
   #echo "Linux"
   BASH_COMPLETION_D="/etc/bash_completion.d/"
+  source /etc/bash_completion
 else
   # echo "Mac"
   BREW_PREFIX=/usr/local
@@ -44,4 +45,37 @@ if [ "$TERM" == "screen-256color" ]; then
 
   echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
   export PROMPT_COMMAND="_update_ps1; history -a; unset timer"
+fi
+
+alias ec=emacsclient
+alias ect="ec -t"
+
+#curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
+if [ -f ~/.git-completion.bash ]; then
+  . ~/.git-completion.bash
+fi
+
+
+if [ -f ~/dotfiles/maven_bash_completion.bash ]; then
+  . ~/dotfiles/maven_bash_completion.bash
+fi
+
+if [ -f ~/dotfiles/helm_completion.bash ]; then
+   . ~/dotfiles/helm_completion.bash
+else
+   echo "No helm_completion.bash"
+fi
+
+if [ -f $BREW_PREFIX/etc/bash_completion ]; then
+. $BREW_PREFIX/etc/bash_completion
+fi
+
+if [ -f /etc/bash_completion ]; then
+   . /etc/bash_completion
+fi
+
+if [ -f ~/dotfiles/kubectl_bash_completion.bash ]; then
+. ~/dotfiles/kubectl_bash_completion.bash
+else
+  echo "No kubectl_bash_completion found"
 fi
