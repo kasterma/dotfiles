@@ -43,7 +43,6 @@ if [ "$TERM" == "screen-256color" ]; then
     PS1="$(~/dotfiles-gh/weakline-shell.py --last-status $? --timer $(($SECONDS - $timer)) )"
   }
 
-  echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
   export PROMPT_COMMAND="_update_ps1; history -a; unset timer"
 fi
 
@@ -62,8 +61,6 @@ fi
 
 if [ -f ~/dotfiles/helm_completion.bash ]; then
    . ~/dotfiles/helm_completion.bash
-else
-   echo "No helm_completion.bash"
 fi
 
 if [ -f $BREW_PREFIX/etc/bash_completion ]; then
@@ -76,6 +73,4 @@ fi
 
 if [ -f ~/dotfiles/kubectl_bash_completion.bash ]; then
 . ~/dotfiles/kubectl_bash_completion.bash
-else
-  echo "No kubectl_bash_completion found"
 fi

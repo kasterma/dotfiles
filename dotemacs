@@ -1,0 +1,195 @@
+;; -*- mode: Lisp;-*-
+;;
+;; .emacs for Bart Kastermans
+;;
+;; Collected together from many different sources.
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; general
+
+(setq inhibit-startup-message t)
+(setq-default indent-tabs-mode nil)
+(if (display-graphic-p)
+    (progn
+      (tool-bar-mode -1)
+      (scroll-bar-mode -1)))
+(menu-bar-mode -1)
+(show-paren-mode t)
+
+(add-hook 'python-mode-hook 'hs-minor-mode)
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "M-%") 'query-replace-regexp)
+(global-set-key (kbd "C-c s") 'hs-toggle-hiding)
+
+;; improve scolling experience
+(setq scroll-step 1
+      scroll-conservatively  10000
+      scroll-margin 7)
+
+;;; initialize package manager
+(require 'package)
+(setq package-archives '(("elpa" . "https://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")))
+
+(package-initialize)
+
+; only auto refresh on first start, from then on do by hand when seems needed
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+(defvar my-packages '(git-gutter
+                      eglot
+                      company
+                      yasnippet
+		      neotree
+                      projectile
+		      magit
+                      ess
+                      stan-mode
+                      editorconfig
+                      ag
+		      which-key
+                      )
+  "A list of packages to ensure are installed at launch.")
+(dolist (p my-packages)
+  (when (not (package-installed-p p))
+    (package-install p)))
+
+(require 'which-key)
+(which-key-mode)
+
+(global-company-mode)
+
+(editorconfig-mode 1)
+
+(require 'neotree)
+(global-set-key [f8] 'neotree-toggle)
+(setq neo-window-fixed-size nil)
+
+(require 'magit)
+(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "C-x M-g") 'magit-dispatch)
+
+;(require 'projectile)
+;(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+;(projectile-mode +1)
+
+;; turn on ido-mode
+;(require 'ido)
+;(ido-mode t)
+;(setq ido-enable-flex-matching t)
+(fido-mode)
+
+(global-git-gutter-mode +1)
+
+;; for putting the backup files all in one directory
+(setq backup-directory-alist `(("." . "~/.emacsbackups")))
+(setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
+(setq auto-save-list-file-prefix "~/.emacsbackups")
+(setq backup-by-copying t)
+(setq delete-old-versions t
+   kept-new-versions 20
+   kept-old-versions 10
+   version-control t)
+
+;; Unbind Pesky Sleep Button
+(if window-system
+    (global-unset-key [(control z)])
+    (global-unset-key [(control x)(control z)]))
+
+(yas-global-mode t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; org mode
+
+;(require 'org)
+
+;(global-set-key "\C-cl" 'org-store-link)
+;(global-set-key "\C-ca" 'org-agenda)
+;(global-set-key "\C-cc" 'org-capture)
+;(global-set-key "\C-cb" 'org-iswitchb)
+
+;(setq org-cycle-separator-lines -2)
+
+;(add-to-list 'org-agenda-files "~/notes/projects.org" 'append)
+;(setq org-todo-keywords
+;     '((sequence "TODO" "MAYBE" "|" "DONE")))
+
+
+;; emacs speaks statistics (this changed when updated to version 15)
+;(add-to-list 'load-path "~/.emacs.d/ess/lisp/")
+;(require 'ess-site)
+; auto conversion of _ to <-
+;(define-key ess-r-mode-map "_" #'ess-insert-assign)
+;(define-key inferior-ess-r-mode-map "_" #'ess-insert-assign)
+
+(column-number-mode t)
+
+;; fix hl-line-mode
+;(global-hl-line-mode)
+;(set-face-background hl-line-face "gray30")
+;(set-face-foreground 'highlight nil)
+
+;(add-hook 'inferior-ess-mode-hook
+;          (lambda () (setq show-trailing-whitespace nil)))
+
+;; show unneeded whitespace
+(setq-default show-trailing-whitespace t)
+(setq default-indicate-empty-lines t)
+
+
+;(defun send-tmux (x)
+;   (shell-command (concat "tmux send-keys '" x "' Enter")))
+
+;(defun 2tmux ()
+;  "execute region in an inferior shell"
+;  (interactive)
+;  (if (use-region-p)
+;    (send-tmux (buffer-substring-no-properties (region-beginning) (region-end)))
+;    (send-tmux  (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
+
+;(global-set-key [(f4)] '2tmux)
+;(add-to-list 'ess-style-alist
+;	     '(my-RRR (ess-indent-level . 4)
+;		      (ess-first-continued-statement-offset . 2);
+;		      (ess-continued-statement-offset . 0)
+;		      (ess-brace-offset . 0)
+;		      (ess-arg-function-offset . 4)
+;		      (ess-arg-function-offset-new-line . '(4))
+;		      (ess-expression-offset . 4)
+;		      (ess-else-offset . 0)
+;		      (ess-close-brace-offset . 0)))
+;(setq ess-default-style 'my-RRR)
+
+;; add diff command line switch (from emacs wiki)
+;(defun command-line-diff (switch)
+;  (let ((file1 (pop command-line-args-left))
+;        (file2 (pop command-line-args-left)))
+;     (ediff file1 file2)))
+
+;(add-to-list 'command-switch-alist '("diff" . command-line-diff))
+
+(put 'narrow-to-region 'disabled nil)
+(global-set-key [(f5)] 'recompile)
+(add-hook 'python-mode-hook 'eglot-ensure)
+(windmove-default-keybindings)
+(winner-mode 1)
+
+(when (executable-find "ipython")
+  (setq python-shell-interpreter "ipython"))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(which-key ag editorconfig stan-mode ess magit projectile neotree yasnippet company eglot git-gutter)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

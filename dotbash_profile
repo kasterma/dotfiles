@@ -60,7 +60,7 @@ bind '"\e[B": history-search-forward'
 # for use of aws command line tool
 export PATH=~/bin:~/.local/bin:$PATH
 
-source ${BASH_COMPLETION_D}docker
+#source ${BASH_COMPLETION_D}docker
 
 function dls {
   docker container ls
