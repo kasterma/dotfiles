@@ -64,6 +64,8 @@
 
 (editorconfig-mode 1)
 
+(load-theme 'tango t)   ;; note: default theme has almost invisible region highlight
+
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
 (setq neo-window-fixed-size nil)
