@@ -11,4 +11,4 @@ ln -s dotfiles/dotgitignore_global .gitignore_global
 ln -s dotfiles-gh/dottmux.conf .tmux.conf
 ln -s dotfiles-gh/dotemacs .emacs
 
-brew install pyenv bash-completions
+brew install pyenv bash-completions age
