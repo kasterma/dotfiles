@@ -74,3 +74,4 @@ fi
 if [ -f ~/dotfiles/kubectl_bash_completion.bash ]; then
 . ~/dotfiles/kubectl_bash_completion.bash
 fi
+. "$HOME/.cargo/env"
