@@ -13,11 +13,10 @@ if [ $(uname) = "Linux" ]; then
 else
   # echo "Mac"
   export BASH_SILENCE_DEPRECATION_WARNING=1
-  PATH=/usr/local/opt/findutils/libexec/gnubin:/usr/local/opt/curl/bin:/usr/local/bin:~/bin:/usr/local/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-tar/libexec/gnubin:/usr/local/bin:$PATH:
+  PATH=/usr/local/opt/gnu-indent/libexec/gnubin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/findutils/libexec/gnubin:/usr/local/opt/gnu-tar/libexec/gnubin:/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/usr/local/opt/gawk/bin:/usr/local/bin:~/bin:/usr/local/bin:/usr/local/bin:$PATH:
   BREW_PREFIX=/usr/local
   export LC_ALL=en_US.UTF-8  # for python click
   BASH_COMPLETION_D="/usr/local/etc/bash_completion.d/"
-  eval $(minikube docker-env)
   export KUBECONFIG=~/.kube/config_tclag_de_acc1:~/.kube/config_tclag_de_dev1:~/.kube/config_tclag_de_prd1:~/.kube/config_tclag_dev1
 fi
 
