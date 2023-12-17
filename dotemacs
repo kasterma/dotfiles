@@ -63,6 +63,7 @@
 (which-key-mode)
 
 (global-company-mode)
+(setq company-idle-delay 1)
 
 (editorconfig-mode 1)
 
