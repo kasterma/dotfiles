@@ -16,7 +16,7 @@ ln -s dotfiles-gh/dotemacs .emacs
 
 # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew analytics off
-brew install pyenv bash-completion emacs tmux coreutils findutils gnu-tar gnu-sed gawk gnutls gnu-indent gnu-getopt
+brew install pyenv bash-completion emacs tmux coreutils findutils gnu-tar gnu-sed gawk gnutls gnu-indent gnu-getopt age
 brew install tree parallel git
 brew install --cask keepassxc
 

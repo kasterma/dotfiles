@@ -170,3 +170,4 @@ alias cfssljson='docker run -ti --rm -v$(pwd):/apps -w /apps --entrypoint=cfsslj
 export CDPATH=.:~:~/projects:/:/workspace
 
 [[ -s ~/.bashrc ]] && source ~/.bashrc
+. "$HOME/.cargo/env"
