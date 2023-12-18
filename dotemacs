@@ -73,8 +73,9 @@
 (global-set-key (kbd "C-x M-g") 'magit-dispatch)
 
 ;(require 'projectile)
-;(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-;(projectile-mode +1)
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
 
 ;; turn on ido-mode
 ;(require 'ido)

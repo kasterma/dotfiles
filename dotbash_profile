@@ -11,13 +11,12 @@ if [ $(uname) = "Linux" ]; then
   source /etc/bash_completion
   export KUBECONFIG=~/.kube/config_tclag_de_acc1:~/.kube/config_tclag_de_dev1:~/.kube/config_tclag_de_prd1:~/.kube/config_tclag_dev1
 else
-  # echo "Mac"
+  #echo "Mac2"
   export BASH_SILENCE_DEPRECATION_WARNING=1
-  PATH=/usr/local/opt/gnu-indent/libexec/gnubin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/findutils/libexec/gnubin:/usr/local/opt/gnu-tar/libexec/gnubin:/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/usr/local/opt/gawk/bin:/usr/local/bin:~/bin:/usr/local/bin:/usr/local/bin:$PATH:
-  BREW_PREFIX=/usr/local
+  PATH=/usr/local/opt/gnu-indent/libexec/gnubin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/findutils/libexec/gnubin:/usr/local/opt/gnu-tar/libexec/gnubin:/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/usr/local/opt/gawk/bin:/usr/local/bin:~/bin:/usr/local/bin:/usr/local/bin:/opt/homebrew/bin/:$PATH:
   export LC_ALL=en_US.UTF-8  # for python click
-  BASH_COMPLETION_D="/usr/local/etc/bash_completion.d/"
-  export KUBECONFIG=~/.kube/config_tclag_de_acc1:~/.kube/config_tclag_de_dev1:~/.kube/config_tclag_de_prd1:~/.kube/config_tclag_dev1
+  BASH_COMPLETION_D="/opt/homebrew/bash_completion.d/"
+  export KUBECONFIG=~/.kube/config_tclag_de_acc1:~/.kube/config_tclag_de_dev1:~/.kube/config_tclag_de_prd1:~/.kube/config_tclag_dev1:~/.kube/config_tools-np.yaml:~/.kube/config_tools-prd.yaml
 fi
 
 MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
