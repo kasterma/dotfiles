@@ -10,7 +10,7 @@ else
   # echo "Mac"
   BREW_PREFIX=/usr/local
   export LC_ALL=en_US.UTF-8  # for python click
-  BASH_COMPLETION_D="/usr/local/etc/bash_completion.d/"
+  [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
 fi
 
 
@@ -60,10 +60,6 @@ fi
 
 if [ -f ~/dotfiles/helm_completion.bash ]; then
    . ~/dotfiles/helm_completion.bash
-fi
-
-if [ -f $BREW_PREFIX/etc/bash_completion ]; then
-. $BREW_PREFIX/etc/bash_completion
 fi
 
 if [ -f /etc/bash_completion ]; then
